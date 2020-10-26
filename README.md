@@ -24,3 +24,11 @@ echo "*/5 * * * * /bin/processtraffic.sh > /www/datadump2.txt" >>  /etc/crontabs
 ```
 /etc/init.d/cron restart
 ```
+
+# Get the data
+
+Your stats should be now refreshed every 5minutes and available under:
+
+http://192.168.0.254/datadump2.txt
+
+Assuming 192.168.0.254 is your router address.
