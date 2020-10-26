@@ -1,7 +1,7 @@
 #!/bin/sh
 
-# get the data, and zero the counters
-# get only info for IP where there is some traffic recorded, discard else
+# Get only info for IP where there is some traffic recorded, discard else
+# Add -Z if want to discard the counters
 iptables -nvx -t mangle -L FORWARD | grep "all" |grep -v "       0        0" > /www/datadump.txt
 
 
