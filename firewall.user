@@ -1,4 +1,7 @@
 # To be added to /etc/firewall.user on OpenWRT router
+# use below two lines to generate for your subnet
+# for i in {1..254};do echo iptables -t mangle -A FORWARD -s 192.168.0.$i;done
+# for i in {1..254};do echo iptables -t mangle -A FORWARD -d 192.168.0.$i;done
 iptables -t mangle -A FORWARD -s 192.168.0.1
 iptables -t mangle -A FORWARD -s 192.168.0.2
 iptables -t mangle -A FORWARD -s 192.168.0.3
