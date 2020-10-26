@@ -1,12 +1,11 @@
 #!/bin/sh
 
 # get the data, and zero the counters
-# iptables -nvx -t mangle -L -Z FORWARD | grep "all" > /tmp/datadump
 # get only info for IP where there is some traffic recorded, discard else
-iptables -nvx -t mangle -L FORWARD | grep "all" |grep -v "       0        0" > /tmp/datadump
+iptables -nvx -t mangle -L FORWARD | grep "all" |grep -v "       0        0" > /www/datadump.txt
 
 
-cat /tmp/datadump | while read line;
+cat /www/datadump.txt | while read line;
 do
         # work out the direction
         seventhfield=$(echo "${line}" | awk '{print $7}')
@@ -26,7 +25,8 @@ do
         #work out the bytes
         bytes=$(echo "${line}" | awk '{print $2}')
 
-        statement="insert into dump (bytes, direction, ip) values ($bytes,'$direction','$ip')"
-        echo $statement
+#        statement="insert into dump (bytes, direction, ip) values ($bytes,'$direction','$ip')"
+        statement="$bytes,'$direction','$ip'"
+        echo $statement 
         #psql -h 192.168.0.3 -U postgres -c "$statement" traffic
 done

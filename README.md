@@ -15,6 +15,6 @@ All credit for the idea goes to the original poster nickname nexus.
 * Add cron job
 
 ```
-echo "*/5 * * * * /bin/processtraffic.sh > /tmp/ptlog" >>  /etc/crontabs/root
+echo "*/5 * * * * /bin/processtraffic.sh > /www/datadump2.txt" >>  /etc/crontabs/root
 
 ```
