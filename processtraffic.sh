@@ -1,32 +1,35 @@
 #!/bin/sh
 
-# Get only info for IP where there is some traffic recorded, discard else
-# Add -Z if want to discard the counters
-iptables -nvx -t mangle -L FORWARD | grep "all" |grep -v "       0        0" > /www/datadump.txt
-
-
-cat /www/datadump.txt | while read line;
-do
-        # work out the direction
+# get the data
+# get only info for IP where there is some traffic recorded, discard else
+iptables -nvx -t mangle -L FORWARD | grep "all" |grep -v "       0        0" > /tmp/datadump.txt
+DATAFILE=/tmp/datadump.txt
+echo {
+for host in `awk '{print $7}' $DATAFILE |sort |grep -v "0.0.0.0/0"|uniq` 
+    do
+    grep $host $DATAFILE | while read line;
+        do
         seventhfield=$(echo "${line}" | awk '{print $7}')
+        eighthfield=$(echo "${line}" | awk '{print $8}')
+        # work out the direction
         if [ $seventhfield != "0.0.0.0/0" ]; then
                 #the direction is outbound from the ip in the seventh field
-                direction='out'
-                ip=$seventhfield
-        fi
-
-        eighthfield=$(echo "${line}" | awk '{print $8}')
+                # directionOut='out'
+                #work out the bytes
+                bytesOut=$(echo "${line}" | awk '{print $2}')
+        fi    
         if [ $eighthfield != "0.0.0.0/0" ]; then
                 #the direction is inbound to the ip in the eighth field
-                direction='in'
-                ip=$eighthfield
-        fi
+                # directionIn='in'
+                # ip=$eighthfield
+                #work out the bytes
+                bytesIn=$(echo "${line}" | awk '{print $2}')
+        fi 
+        statement="\"$host\": { \"in\": $bytesIn, \"out\": $bytesOut }," 
+        echo $statement
+    done
 
-        #work out the bytes
-        bytes=$(echo "${line}" | awk '{print $2}')
-
-#        statement="insert into dump (bytes, direction, ip) values ($bytes,'$direction','$ip')"
-        statement="$bytes,'$direction','$ip'"
-        echo $statement 
-        #psql -h 192.168.0.3 -U postgres -c "$statement" traffic
 done
+# Adding dummy line without trailing comma sign. Dirty hack, looking to improve!
+echo '"6.6.6.6": { "in": 0, "out": 0 }'
+echo }
