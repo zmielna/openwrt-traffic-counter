@@ -30,6 +30,6 @@ for host in `awk '{print $7}' $DATAFILE |sort |grep -v "0.0.0.0/0"|uniq`
     done
 
 done
-# Adding dummy line without trailing comma sign. Dirty hack, looking to improve!
 echo '"6.6.6.6": { "in": 0, "out": 0 }'
 echo }
+
